@@ -1,0 +1,31 @@
+services:
+  stirlingpdf:
+    image: frooodle/s-pdf:latest
+    container_name: stirlingpdf
+    volumes:
+      - stirling-config:/configs
+      - stirling-storage:/usr/share/tesseract-ocr/5/tessdata
+    environment:
+      - DOCKER_ENABLE_SECURITY=false
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      # define basic auth middleware for dashboard
+      - "traefik.http.middlewares.pdf-auth.basicauth.removeheader=true"
+      - "traefik.http.middlewares.pdf-auth.basicauth.users=${HASH_PASSWORD}"
+      - "traefik.http.routers.pdf.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.pdf.middlewares=pdf-auth"
+      - "traefik.http.routers.pdf.entrypoints=web-secure"
+      - "traefik.http.routers.pdf.tls.certresolver=tlschallenge"
+      - "traefik.http.services.pdf.loadbalancer.server.port=8080"
+    networks:
+      - traefik
+volumes:
+  stirling-config:
+    name: stirling-config
+  stirling-storage:
+    name: stirling-storage
+networks:
+  traefik:
+    name: traefik # create this network before running this deployment:
+    external: true
