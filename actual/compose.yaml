@@ -1,0 +1,22 @@
+services:
+  actual:
+    container_name: actual
+    image: actualbudget/actual-server:latest
+    environment:
+      - ACTUAL_HOSTNAME:0.0.0.0
+    volumes:
+      - actual-data:/data
+    restart: unless-stopped
+    labels:
+      - "tsdproxy.enable=true"
+      - "tsdproxy.container_port=5006"
+      - "tsdproxy.name=actual"
+    networks:
+      - tsd-proxy
+volumes:
+  actual-data:
+    name: actual-data
+networks:
+  tsd-proxy:
+    name: tsd-proxy
+    external: true
