@@ -1,0 +1,17 @@
+services:
+  socket-proxy:
+    container_name: socket-proxy
+    image: tecnativa/docker-socket-proxy:latest
+    restart: unless-stopped
+    privileged: true
+    # userns_mode: host # this is needed if https://docs.docker.com/engine/security/userns-remap/#enable-userns-remap-on-the-daemon is setup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      CONTAINERS: 1 # tell the proxy to grant get requests to /containers/* from the Docker API
+    networks:
+      - socket-proxy
+networks:
+  socket-proxy:
+    name: socket-proxy # make sure this is created first
+    external: true

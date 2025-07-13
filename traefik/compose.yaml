@@ -1,0 +1,47 @@
+services:
+  traefik-v3:
+    container_name: traefik-v3
+    image: traefik:v3.4.3
+    environment:
+      - "TZ=${TZ}"
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+      - "CF_API_EMAIL=${CF_API_EMAIL}"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ${CONFIG_DIR}/traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro # static traefik configuration
+      - ${CONFIG_DIR}/traefik/dynamic.yaml:/etc/traefik/dynamic.yaml:ro # dynamic traefik configuration
+      - traefik:/certs
+    labels:
+      - "traefik.enable=true"
+      # define basic auth middleware for dashboard
+      - "traefik.http.middlewares.traefik-auth.basicauth.removeheader=true"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${HASH_PASSWORD}"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=traefik-dash"
+      - "tsdproxy.enable=true"
+      - "tsdproxy.container_port=8080"
+      - "tsdproxy.name=traefik"
+    networks:
+      - traefik
+      - socket-proxy
+      - tsd-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+volumes:
+  traefik:
+    name: traefik
+networks:
+  traefik:
+    name: traefik # create this network before running this deployment:
+    external: true
+  socket-proxy:
+    name: socket-proxy # make sure this is created first
+    external: true
+  tsd-proxy:
+    name: tsd-proxy
+    external: true

@@ -1,0 +1,18 @@
+defaultProxyProvider: default
+docker:
+  local: # Name of the Docker target provider
+    host: unix:///var/run/docker.sock # Docker socket or daemon address
+    defaultProxyProvider: default # Default proxy provider for this Docker server
+tailscale:
+  providers:
+    default: # Name of the Tailscale provider
+      authKeyFile: /config/authKeyFile
+      controlUrl: https://controlplane.tailscale.com # Override the default Tailscale control URL
+  dataDir: /data/ # Tailscale data directory
+http:
+  hostname: 0.0.0.0 # HTTP server hostname
+  port: 8080 # HTTP server port
+log:
+  level: info # Logging level (info, error, debug or trace)
+  json: false # Enable JSON logging (true/false)
+proxyAccessLog: true # Enable container access logs (true/false)
