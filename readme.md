@@ -1,64 +1,84 @@
-# Home Lab
+ # Home Lab
 
-## Overview
+ ## Overview
 
-Services are exposed either via traefik(public) or tsdproxy(Tailscale)
+ This repository contains the configuration for my home lab services, managed with Docker Compose. Services are exposed to
+ the internet via Traefik (public) or to my Tailscale network via tsdproxy.
 
-## Services
+ ## Services
 
-### actual
+ <details>
+ <summary>actual</summary>
 
-ActualBudget - personal accounting app
+ **ActualBudget - personal accounting app**
 
-#### proxy
-- via tsdproxy
+ - **Proxy:** via tsdproxy
+ </details>
 
-### caddy
+ <details>
+ <summary>caddy</summary>
 
-#TODO
-Static-site server/reverse proxy
+ **Static-site server/reverse proxy**
 
-### docker-socket-proxy
+ - **TODO:** Configuration needed.
+ </details>
 
-Docker socket proxy so traefik doesn't directly mount the docker socket
+ <details>
+ <summary>docker-socket-proxy</summary>
 
-### gitea
+ **Docker socket proxy**
 
-#TODO
-Simple git remote
+ This service allows Traefik to interact with the Docker socket without giving it direct access, enhancing security.
+ </details>
 
-### immich
+ <details>
+ <summary>gitea</summary>
 
-Photo video backup with searchable image/video recognition
-#### proxy
-- via traefik
+ **Simple git remote**
 
-### miniflux
+ - **TODO:** Configuration needed.
+ </details>
 
-RSS feed reader web app
+ <details>
+ <summary>immich</summary>
 
-#### proxy
-- via traefik
+ **Photo and video backup with searchable image/video recognition**
 
-### pdf
+ - **Proxy:** via traefik
+ </details>
 
-Stirlingpdf - pdf editor web app
+ <details>
+ <summary>miniflux</summary>
 
-#### proxy
-- via traefik
-- with basic auth middleware
+ **RSS feed reader web app**
 
-### traefik
+ - **Proxy:** via traefik
+ </details>
 
-Docker container aware reverse proxy
+ <details>
+ <summary>pdf</summary>
 
-#### proxy
-- dashboard via tsdproxy
+ **Stirling-PDF - PDF editor web app**
 
-### tsdproxy
+ - **Proxy:** via traefik with basic auth middleware
+ </details>
 
-Docker socket proxy
+ <details>
+ <summary>traefik</summary>
 
-## Possible things to change?
+ **Docker container-aware reverse proxy**
 
-- Use docker in rootless mode with userns remap
+ - **Proxy:** Dashboard via tsdproxy
+ </details>
+
+ <details>
+ <summary>tsdproxy</summary>
+
+ **Tailscale Docker socket proxy**
+
+ Exposes services to a Tailscale network.
+ </details>
+
+ ## Future Improvements
+
+ - [ ] Use Docker in rootless mode with `userns-remap` for better security.
