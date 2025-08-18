@@ -1,0 +1,28 @@
+services:
+  pocketbase:
+    build:
+      context: .        # directory where your Dockerfile is
+      dockerfile: Dockerfile
+    container_name: pocketbase
+    volumes:
+      - pb_data:/pb/pb_data # persist PocketBase data
+      # If you have migrations/hooks locally, you can mount them too:
+      # - ./pb_migrations:/pb/pb_migrations
+      # - ./pb_hooks:/pb/pb_hooks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pb.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.pb.entrypoints=web-secure"
+      - "traefik.http.routers.pb.tls.certresolver=tlschallenge"
+      - "traefik.http.services.pb.loadbalancer.server.port=8080"
+    networks:
+      - traefik
+    restart: unless-stopped
+
+volumes:
+  pb_data:
+
+networks:
+  traefik:
+    external: true
+    name: traefik
