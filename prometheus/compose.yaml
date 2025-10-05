@@ -1,0 +1,32 @@
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ${CONFIG_DIR}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    labels:
+      - "tsdproxy.enable=true"
+      - "tsdproxy.container_port=9090"
+      - "tsdproxy.name=prometheus"
+    networks:
+      - metrics
+      - tsd-proxy
+
+volumes:
+  prometheus-data:
+    name: prometheus-data
+
+networks:
+  metrics:
+    name: metrics
+    external: true
+  tsd-proxy:
+    name: tsd-proxy
+    external: true

@@ -29,6 +29,7 @@ services:
       - traefik
       - socket-proxy
       - tsd-proxy
+      - metrics
     ports:
       - "80:80"
       - "443:443"
@@ -44,4 +45,7 @@ networks:
     external: true
   tsd-proxy:
     name: tsd-proxy
+    external: true
+  metrics:
+    name: metrics
     external: true

@@ -1,0 +1,29 @@
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - metrics
+      - tsd-proxy
+    labels:
+      - "tsdproxy.enable=true"
+      - "tsdproxy.container_port=3000"
+      - "tsdproxy.name=grafana"
+
+volumes:
+  grafana-data:
+    name: grafana-data
+
+networks:
+  metrics:
+    name: metrics
+    external: true
+  tsd-proxy:
+    name: tsd-proxy
+    external: true
