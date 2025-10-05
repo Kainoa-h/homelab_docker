@@ -4,6 +4,7 @@ api:
   debug: false
 metrics:
   prometheus:
+    entryPoint: traefik-dash # Use existing dashboard port
     addEntryPointsLabels: true
     addRoutersLabels: true
     addServicesLabels: true
